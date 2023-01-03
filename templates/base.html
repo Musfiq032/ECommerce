@@ -76,7 +76,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="{% url 'home:Login' %}">Sign in / Sign up</a>
+                                        <a href="{% url 'ECommerceAuth:Signup' %}">Sign in / Sign up</a>
                                     </li>
                                 </ul>
                             </li>
@@ -433,7 +433,19 @@
 
                     <div class="header-right">
                         <i class="la la-lightbulb-o"></i>
-                        <p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p>
+                        {% if user.is_authenticated %}
+                        <ul class="menu">
+                            <li>
+                                <a href="#" class="sf-with-ul">Welcome {{ user.username }}</a>
+    
+                                <ul>
+                                    <li><a href="#">Profile</a></li>
+                                    <li><a href="{% url 'ECommerceAuth:logout' %}">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% endif %}
+                        
                     </div>
                 </div>
                 <!-- End .container -->
