@@ -1,0 +1,8 @@
+{% autoescape off %}
+
+    Hi {{ user.username }}
+    Please Click this link to verify your ECommerce account
+
+    http://{{ domain }}{% url 'ECommerceAuth:activate' uidb64=uid token=token %}
+
+{% endautoescape %}
