@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+        <main class="main">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home:Home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Reset Your Password</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url({% static 'assets/images/backgrounds/login-bg.jpg' %})">
+            	<div class="container">
+            		<div class="form-box">
+            			<div class="form-tab">
+	            			<ul class="nav nav-pills nav-fill" role="tablist">
+
+							    <li class="nav-item">
+							        <a class="nav-link active" id="reset" data-toggle="tab" href="#reset" role="tab" aria-controls="reset" aria-selected="false">Reset Your Password</a>
+							    </li>
+							</ul>
+							<div class="tab-content">
+							    <div class="tab-pane fade show active" id="reset" role="tabpanel" aria-labelledby="reset-tab">
+							    	<form action="/ecommerceauth/reset-password/" method="post">{% csrf_token %}
+
+										{% for message in messages %}
+										<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+											<strong></strong>{{message}}
+											<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											  </button>
+										  </div>
+										  {% endfor %}
+										  <br>
+
+							    		<div class="form-group">
+							    			<label for="singin-email-2">Email address *</label>
+							    			<input type="text" class="form-control" id="reset-email" name="reset-email" required>
+							    		</div><!-- End .form-group -->
+
+
+							    		<div class="form-footer">
+							    			<button type="submit" class="btn btn-outline-primary-2">
+			                					<span>Submit</span>
+			            						<i class="icon-long-arrow-right"></i>
+			                				</button>
+
+
+											<a href="{% url 'ECommerceAuth:login' %}" class="forgot-link">Go Back to Login?</a>
+
+                                             <br>
+
+							    		</div><!-- End .form-footer -->
+							    	</form>
+
+							</div><!-- End .tab-content -->
+						</div><!-- End .form-tab -->
+            		</div><!-- End .form-box -->
+            	</div><!-- End .container -->
+            </div><!-- End .login-page section-bg -->
+        </main><!-- End .main -->
+
+{% endblock %}

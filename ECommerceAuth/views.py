@@ -23,18 +23,22 @@ from django.core.mail import BadHeaderError, send_mail
 from django.core import mail
 from django.conf import settings
 
+# Reset Password Generator
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 # threading
 import threading
 
 
-#class EmailThread(threading.Thread):
+# class EmailThread(threading.Thread):
 
-   # def __int__(self, email_message):
-    #    self.email_message = email_message
-   ##     threading.Thread.__init__(self)
+# def __int__(self, email_message):
+#    self.email_message = email_message
+##     threading.Thread.__init__(self)
 
-   # def run(self):
-  #      self.email_message.send()
+# def run(self):
+#      self.email_message.send()
 
 
 def signup_view(request):
@@ -122,6 +126,76 @@ def login_view(request):
             return redirect('/ecommerceauth/login/')
 
     return render(request, 'Signup&Login/login.html')
+
+
+class reset_password_view(View):
+    def get(self, request):
+        return render(request, 'ecommerceauth/reset_email.html')
+
+    def post(self, request):
+        resetemail = request.POST.get('reset-email')
+        user = User.objects.filter(email=resetemail)
+
+        if user.exists():
+            current_site = get_current_site(request)
+            email_subject = '[Reset Your ECommerce Password]'
+            message = render_to_string('ecommerceauth/reset_password.html', {
+                'user': user,
+                'domain': '127.0.0.1:8000',
+                'uid': urlsafe_base64_encode(force_bytes(user[0].pk)),
+                'token': PasswordResetTokenGenerator().make_token(user[0])
+
+            })
+
+            email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [resetemail])
+            email_message.send(fail_silently=False)
+            messages.info(request, 'Password Reset Link Has been sent to your Email')
+
+            return render(request, 'ecommerceauth/reset_email.html')
+
+
+class set_new_password_view(View):
+
+    def get(self, request, uidb64, token):
+
+        context = {
+            'uidb64': uidb64,
+            'token': token
+        }
+        try:
+            user_id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=user_id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                messages.warning(request, 'Password Reset Link is Invalid')
+                return render(request, 'ecommerceauth/reset_email.html')
+
+        except DjangoUnicodeDecodeError as identifier:
+            pass
+
+        return render(request, 'ecommerceauth/set-new-password.html', context)
+
+    def post(self,request, uidb64, token):
+        context = {
+            'uidb64': uidb64,
+            'token': token,
+        }
+
+        password = request.POST.get('reset-password')
+        confirm_password = request.POST.get('reset-password1')
+        if password != confirm_password:
+            messages.error(request, "Password do not Match,Please Try Again!")
+            return render(request,'ecommerceauth/set-new-password.html',context)
+        try:
+            user_id= force_str(urlsafe_base64_decode(uidb64))
+            user= User.objects.get(pk=user_id)
+            user.set_password(password)
+            user.save()
+            messages.success(request,'Password Reset Successfull')
+            return redirect('/ecommerceauth/login/')
+        except DjangoUnicodeDecodeError as identifier:
+            messages.error(request, 'Something went wrong')
+            return render(request,'ecommerceauth/set-new-password.html',context)
 
 
 def logout_view(request):
