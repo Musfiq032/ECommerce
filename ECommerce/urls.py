@@ -18,6 +18,9 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+admin.site.site_header= 'ECommerce Admin'
+admin.site.site_title= 'ECommerce Admin'
+
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', include('home.urls')),

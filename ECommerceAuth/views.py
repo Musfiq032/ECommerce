@@ -32,13 +32,13 @@ import threading
 
 
 # class EmailThread(threading.Thread):
-
-# def __int__(self, email_message):
-#    self.email_message = email_message
-##     threading.Thread.__init__(self)
-
-# def run(self):
-#      self.email_message.send()
+#
+#     def __int__(self, email):
+#         self.email_message = email
+#         threading.Thread.__init__(self)
+#
+#     def run(self):
+#         self.email_message.send()
 
 
 def signup_view(request):
@@ -79,6 +79,7 @@ def signup_view(request):
         email = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
 
         email.send(fail_silently=True)
+        #EmailThread('email').start()
         # send_mail
         #       email_subject,
         #     message,
