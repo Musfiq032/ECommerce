@@ -203,3 +203,4 @@ def logout_view(request):
     logout(request)
     messages.warning(request, "Logout Success")
     return render(request, 'Signup&Login/login.html')
+
