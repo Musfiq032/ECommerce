@@ -14,7 +14,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                         <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Grid 4 Columns</li>
+                        <li class="breadcrumb-item active" aria-current="page">All Products</li>
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
@@ -89,12 +89,14 @@
 
                             <div class="products mb-3">
                                 <div class="row justify-content-center">
+
+                                    {% for product in product_list %}
                                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                         <div class="product product-7 text-center">
                                             <figure class="product-media">
                                                 <span class="product-label label-new">New</span>
                                                 <a href="product.html">
-                                                    <img src="{% static 'assets/images/products/product-4.jpg' %}" alt="Product image" class="product-image">
+                                                    <img src="/media/{{ product.product_images.first.image }}" alt="Product image" class="product-image">
                                                 </a>
 
                                                 <div class="product-action-vertical">
@@ -112,22 +114,16 @@
                                                 <div class="product-cat">
                                                     <a href="#">Women</a>
                                                 </div><!-- End .product-cat -->
-                                                <h3 class="product-title"><a href="product.html">Brown paperbag waist pencil skirt</a></h3><!-- End .product-title -->
+                                                <h3 class="product-title"><a href="{% url 'Product:Product-Details' product.slug %}">{{ product.product_name}}</a></h3><!-- End .product-title -->
                                                 <div class="product-price">
-                                                    $60.00
+                                                    ${{ product.price }}
                                                 </div><!-- End .product-price -->
-                                                <div class="ratings-container">
-                                                    <div class="ratings">
-                                                        <div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-                                                    </div><!-- End .ratings -->
-                                                    <span class="ratings-text">( 2 Reviews )</span>
-                                                </div><!-- End .rating-container -->
 
 
                                             </div><!-- End .product-body -->
                                         </div><!-- End .product -->
                                     </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
-
+                                    {% endfor %}
                                 </div><!-- End .row -->
                             </div><!-- End .products -->
 
@@ -168,69 +164,16 @@
 									<div class="collapse show" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
+                                                {% for category in product_list %}
 												<div class="filter-item">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="cat-1">
-														<label class="custom-control-label" for="cat-1">Dresses</label>
+														<label class="custom-control-label" for="cat-1">{{ category.subcategory }}</label>
 													</div><!-- End .custom-checkbox -->
 													<span class="item-count">3</span>
 												</div><!-- End .filter-item -->
+                                                {% endfor %}
 
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-2">
-														<label class="custom-control-label" for="cat-2">T-shirts</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">0</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-3">
-														<label class="custom-control-label" for="cat-3">Bags</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">4</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-4">
-														<label class="custom-control-label" for="cat-4">Jackets</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">2</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-5">
-														<label class="custom-control-label" for="cat-5">Shoes</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">2</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-6">
-														<label class="custom-control-label" for="cat-6">Jumpers</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">1</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-7">
-														<label class="custom-control-label" for="cat-7">Jeans</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">1</span>
-												</div><!-- End .filter-item -->
-
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="cat-8">
-														<label class="custom-control-label" for="cat-8">Sportwear</label>
-													</div><!-- End .custom-checkbox -->
-													<span class="item-count">0</span>
-												</div><!-- End .filter-item -->
 											</div><!-- End .filter-items -->
 										</div><!-- End .widget-body -->
 									</div><!-- End .collapse -->

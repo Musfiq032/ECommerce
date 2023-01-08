@@ -65,41 +65,77 @@
                                             </div><!-- End .rating-container -->
 
                                             <div class="product-price">
-                                                ${{product_details.price}}
+                                                ${% if updated_price %}
+                                                {{ updated_price }}
+                                                {% else %}
+                                                {{product_details.price}}
+                                                {% endif %}
                                             </div><!-- End .product-price -->
 
                                             <div class="product-content">
                                                 <p>Sed egestas, ante et vulputate volutpat, eros semper est, vitae luctus metus libero eu augue.</p>
                                             </div><!-- End .product-content -->
+                                                {% if product_details.color_variant.count %}
 
-                                            <div class="details-filter-row details-row-size">
-                                                <label>Color:</label>
-
-                                                <div class="select-custom">
-                                                <select name="color" id="color" class="form-control">
-                                                <option value="#" selected="selected">Select a size</option>
+                                                       <div class="form-group col-md">
+                                                           <label><strong>Select Color</strong></label>
+                                                <div class="mt-1">
                                                     {% for color in product_details.color_variant.all %}
-                                                     <option value="color">{{ color.color_name }}</option>
+                                                        <label class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" onchange="get_correct_price('{{ color.color_name }}')" name="select_color" checked="" class="custom-control-input">
+                                                        <div class="custom-control-label">
+                                                            {{ color.color_name }}
+                                                        </div>
+                                                        </label>
                                                     {% endfor %}
-                                                </select>
+                                                </div>
 
-                                                </div><!-- End .product-nav -->
-                                            </div><!-- End .details-filter-row -->
+                                                </div>
+{#                                            <div class="details-filter-row details-row-size">#}
+{#                                                <label>Color:</label>#}
+{##}
+{#                                                <div class="select-custom">#}
+{#                                                <select name="color" id="color" class="form-control">#}
+{#                                                <option value="#" selected="selected">Select a size</option>#}
+{#                                                    {% for color in product_details.color_variant.all %}#}
+{#                                                     <option value="color">{{ color.color_name }}</option>#}
+{#                                                    {% endfor %}#}
+{#                                                </select>#}
+{##}
+{#                                                </div><!-- End .product-nav -->#}
+{#                                            </div><!-- End .details-filter-row -->#}
+                                                {% endif %}
 
-                                            <div class="details-filter-row details-row-size">
-                                                <label for="size">Size:</label>
-                                                <div class="select-custom">
-                                                    <select name="size" id="size" class="form-control">
-                                                        <option value="#" selected="selected">Select a size</option>
-                                                        {% for size in product_details.size_variant.all %}
-                                                        <option value="size">{{ size.size_name }}</option>
-                                                        {% endfor %}
+                                        {{ selected_size }}
 
+                                            {% if product_details.size_variant.count %}
 
-                                                    </select>
-                                                </div><!-- End .select-custom -->
+                                                <div class="form-group col-md">
+                                                    <label><strong>Select Size</strong></label>
+                                                <div class="mt-1">
+                                                    {% for size in product_details.size_variant.all %}
+                                                        <label class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" onchange="get_correct_price('{{ size.size_name }}')" name="selected_size" {% if selected_size == size.size_name %} checked {% endif %} class="custom-control-input">
+                                                        <div class="custom-control-label">
+                                                            {{ size.size_name }}
+                                                        </div>
+                                                        </label>
+                                                    {% endfor %}
+                                                </div>
 
-                                            </div><!-- End .details-filter-row -->
+                                                </div>
+{#                                            <div class="details-filter-row details-row-size">#}
+{#                                                <label for="size">Size:</label>#}
+{#                                                {% for size in product_details.size_variant.all %}#}
+{#                                                <div class="custom-control custom-radio">#}
+{#                                                       <input type="radio" id="size" name="select_size" class="custom-control-input" onchange="get_correct_price('{{ size.size_name }}')">#}
+{#                                                       <label class="custom-control-label" for="select_size">{{ size.size_name}}</label>#}
+{##}
+{#                                                </div><!-- End .select-custom -->#}
+{#                                              {% endfor %}#}
+{##}
+{#                                            </div><!-- End .details-filter-row -->#}
+                                        {% endif %}
 
                                             <div class="product-details-action">
                                                 <div class="details-action-col">
@@ -433,5 +469,11 @@
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+
+    <script>
+        function get_correct_price(size){
+            window.location.href= window.location.pathname + `?size=${size}`
+        }
+    </script>
 
 {% endblock %}
