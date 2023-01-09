@@ -8,6 +8,10 @@ Project Features:
 
 1.User Login system to see their orders, order status, cancel order
 
+Signup:
+![Signup](https://user-images.githubusercontent.com/40652970/211254335-364646ed-3710-4183-82ae-201413576719.png)
+
+
 2.Product view, sorting & filtering 2. Add to cart , Remove from cart
 
 3. Software generated invoice upon placing order & Notification system upon confirming order
