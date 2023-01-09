@@ -27,6 +27,11 @@ Reset-Password:
 
 2.Product view, sorting & filtering 2. Add to cart , Remove from cart
 
+Product-List in Homapage:
+
+![Homapage](https://user-images.githubusercontent.com/40652970/211255514-2057f813-898c-4b38-be90-7c14bce50a9b.png)
+
+
 Product-Details:
 
 ![Product-Details](https://user-images.githubusercontent.com/40652970/211255189-825a9180-c93e-4919-bed3-d8ac81eca684.png)
