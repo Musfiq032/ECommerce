@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='product',
             name='price',
-            field=models.CharField(default='0', max_length=50),
+            field=models.CharField(default='', max_length=50),
         ),
         migrations.AlterField(
             model_name='product',
