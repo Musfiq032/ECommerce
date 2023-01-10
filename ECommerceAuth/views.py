@@ -1,8 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.generic import View
+from .models import *
 
 # to activate the user accounts
 
@@ -43,6 +45,7 @@ import threading
 
 def signup_view(request):
     if request.method == 'POST':
+        username = request.POST.get('register-username')
         email = request.POST.get('register-email')
         password = request.POST.get('register-password')
         confirm_password = request.POST.get('register-password1')
@@ -50,19 +53,19 @@ def signup_view(request):
             messages.error(request, "Password do not Match,Please Try Again!")
             return redirect('/ecommerceauth/signup/')
         try:
-            if User.objects.get(username=email):
-                messages.warning(request, "Email Already Exists")
+            if User.objects.get(username=username):
+                messages.warning(request, "Username Already Exists")
                 return redirect('/ecommerceauth/signup/')
         except Exception as identifier:
             pass
         try:
             if User.objects.get(email=email):
                 messages.warning(request, "Email Already Exists")
-                return redirect('/signup')
+                return redirect('/ecommerceauth/signup/')
         except Exception as identifier:
             pass
             # checks for error inputs
-        user = User.objects.create_user(email, email, password)
+        user = User.objects.create_user(username, email, password)
         user.is_active = False
         user.save()
         email_subject = 'Activate Your Account'
@@ -79,7 +82,7 @@ def signup_view(request):
         email = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
 
         email.send(fail_silently=True)
-        #EmailThread('email').start()
+        # EmailThread('email').start()
         # send_mail
         #       email_subject,
         #     message,
@@ -176,7 +179,7 @@ class set_new_password_view(View):
 
         return render(request, 'ecommerceauth/set-new-password.html', context)
 
-    def post(self,request, uidb64, token):
+    def post(self, request, uidb64, token):
         context = {
             'uidb64': uidb64,
             'token': token,
@@ -186,17 +189,17 @@ class set_new_password_view(View):
         confirm_password = request.POST.get('reset-password1')
         if password != confirm_password:
             messages.error(request, "Password do not Match,Please Try Again!")
-            return render(request,'ecommerceauth/set-new-password.html',context)
+            return render(request, 'ecommerceauth/set-new-password.html', context)
         try:
-            user_id= force_str(urlsafe_base64_decode(uidb64))
-            user= User.objects.get(pk=user_id)
+            user_id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=user_id)
             user.set_password(password)
             user.save()
-            messages.success(request,'Password Reset Successfull')
+            messages.success(request, 'Password Reset Successfull')
             return redirect('/ecommerceauth/login/')
         except DjangoUnicodeDecodeError as identifier:
             messages.error(request, 'Something went wrong')
-            return render(request,'ecommerceauth/set-new-password.html',context)
+            return render(request, 'ecommerceauth/set-new-password.html', context)
 
 
 def logout_view(request):
@@ -204,3 +207,32 @@ def logout_view(request):
     messages.warning(request, "Logout Success")
     return render(request, 'Signup&Login/login.html')
 
+
+def add_to_cart(request, slug):
+
+    print('""""""""""""""""""""""""""')
+    print(request.user)
+    print('""""""""""""""""""""""""""')
+    variant = request.GET.get('variant')
+    product = Product.objects.get(slug=slug)
+    user = request.user
+
+    cart , _ = Cart.objects.get_or_create(user=user, is_paid=False)
+
+    cart_item = CartItem.objects.create(cart=cart, product=product)
+
+    if variant:
+        variant = request.GET.get('variant')
+        size_variant = SizeVariant.objects.get(size_name=variant)
+        cart_item.size_variant = size_variant
+        cart_item.save()
+
+    print(request.user.username)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def cart(request):
+    context ={
+        'cart': Cart.objects.filter(is_paid=False, user= request.user)
+    }
+    return render(request,'ecommerceauth/cart.html')

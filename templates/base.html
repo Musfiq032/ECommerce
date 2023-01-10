@@ -75,9 +75,16 @@
                                             <!-- End .header-menu -->
                                         </div>
                                     </li>
+                                    {% if user.is_authenticated %}
                                     <li>
-                                        <a href="{% url 'ECommerceAuth:Signup' %}">Sign in / Sign up</a>
+                                        <a href="{% url 'ECommerceAuth:logout' %}">Log Out</a>
                                     </li>
+                                    {% else %}
+                                          <li>
+                                        <a href="{% url 'ECommerceAuth:login' %}">Sign In</a>
+                                    </li>
+
+                                    {% endif %}
                                 </ul>
                             </li>
                         </ul>
@@ -177,7 +184,7 @@
                                 aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <div class="icon">
                                     <i class="icon-shopping-cart"></i>
-                                    <span class="cart-count">2</span>
+                                    <span class="cart-count">{{ request.user.user_profile.get_cart_count }}</span>
                                 </div>
                                 <p>Cart</p>
                             </a>
@@ -457,7 +464,7 @@
         <main class="main">{% block content %} {% endblock %}</main>
         <footer class="footer">
             <div class="cta bg-image bg-dark pt-4 pb-5 mb-0" style="
-            background-image: url(static/assets/images/demos/demo-4/bg-5.jpg);
+            background-image: url({% static 'assets/images/demos/demo-4/bg-5.jpg' %});
           ">
                 <div class="container">
                     <div class="row justify-content-center">

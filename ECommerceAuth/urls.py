@@ -3,6 +3,7 @@ from django.conf import settings
 from django.urls import path
 from ECommerceAuth import views
 
+
 app_name = 'ECommerceAuth'
 urlpatterns = [
                path('signup/', views.signup_view, name='Signup'),
@@ -11,6 +12,8 @@ urlpatterns = [
                path('activate/<uidb64>/<token>', views.activate_account_view.as_view(), name='activate'),
                path('reset-password/', views.reset_password_view.as_view(), name='ResetYourPassword'),
                path('set-new-password/<uidb64>/<token>', views.set_new_password_view.as_view(), name='Set-new-password'),
+               path('cart/', views.cart, name='cart'),
+               path('add_to_cart/<slug>/', views.add_to_cart, name='add_to_cart')
 
 
 

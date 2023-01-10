@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from Product.models import Product
+from ECommerceAuth.models import *
 
 
 # Create your views here.
 def product_details_view(request, slug):
+
     try:
 
         prorduct_details = Product.objects.get(slug=slug)
@@ -30,3 +32,5 @@ def product_list_view(request):
         'product_list': product_list
     }
     return render(request, 'Product/product_list.html', context)
+
+
