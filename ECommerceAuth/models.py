@@ -41,7 +41,7 @@ class Cart(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def get_cart_total(self):
-        cart_item = self.cart_item.all()
+        cart_item = self.cart_items.all()
         price= []
         for cart_item in cart_item:
             price.append(cart_item.product.price)
@@ -51,6 +51,7 @@ class Cart(models.Model):
             if cart_item.size_variant:
                 size_variant_price= cart_item.size_variant.price
                 price.append(size_variant_price)
+        return sum(price)
 
     def __str__(self):
         return f"{self.user.username}'s Cart"

@@ -233,7 +233,8 @@ def add_to_cart(request, slug):
 
 def cart(request):
     context ={
-        'cart_item': CartItem.objects.filter(cart__user=request.user)
+        'cart_item': CartItem.objects.filter(cart__user=request.user),
+        'cart': Cart.objects.filter(user= request.user, is_paid=False)
     }
     return render(request,'ecommerceauth/cart.html', context)
 

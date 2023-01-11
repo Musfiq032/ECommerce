@@ -41,7 +41,7 @@
 												<div class="product">
 													<figure class="product-media">
 														<a href="#">
-															<img src="/media/{{ cart_items.product.product_images.first }}" alt="Product image">
+															<img src="/media/{{ cart_items.product.product_images.first.image }}" alt="Product image">
 														</a>
 													</figure>
 
@@ -80,7 +80,6 @@
 			            				</form>
 			            			</div><!-- End .cart-discount -->
 
-			            			<a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
 		            			</div><!-- End .cart-bottom -->
 	                		</div><!-- End .col-lg-9 -->
 	                		<aside class="col-lg-3">
@@ -91,7 +90,11 @@
 	                					<tbody>
 	                						<tr class="summary-subtotal">
 	                							<td>Subtotal:</td>
-	                							<td></td>
+	                							<td>
+                                                    {% for cart_total in cart %}
+                                                        BDT.{{ cart_total.get_cart_total }}
+                                                    {% endfor %}
+                                                </td>
 	                						</tr><!-- End .summary-subtotal -->
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>
