@@ -64,8 +64,8 @@
                                                 <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
                                             </div><!-- End .rating-container -->
 
-                                            <div class="product-price">
-                                                ${% if updated_price %}
+                                            <div class="product-price">BDT.
+                                                {% if updated_price %}
                                                 {{ updated_price }}
                                                 {% else %}
                                                 {{product_details.price}}
@@ -106,7 +106,6 @@
 {#                                            </div><!-- End .details-filter-row -->#}
                                                 {% endif %}
 
-                                        {{ selected_size }}
 
                                             {% if product_details.size_variant.count %}
 
@@ -148,7 +147,7 @@
                                                 </div><!-- End .details-action-col -->
 
                                                 <div class="details-action-wrapper">
-                                                    <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                                    <a href="{% url 'ECommerceAuth:add_to_wishlist' product_details.slug %}?variant={{ selected_size }}" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                                                 </div><!-- End .details-action-wrapper -->
                                             </div><!-- End .product-details-action -->
 

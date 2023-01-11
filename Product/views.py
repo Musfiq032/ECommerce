@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.shortcuts import render, redirect, HttpResponseRedirect, get_object_or_404
 from Product.models import Product
-from ECommerceAuth.models import *
+from .models import *
 
 
 # Create your views here.
@@ -26,11 +26,14 @@ def product_details_view(request, slug):
 
 
 def product_list_view(request):
-    product_list = Product.objects.all()
 
     context = {
-        'product_list': product_list
+        'product_list': Product.objects.all(),
+        'Sub_Category': SubCategory.objects.all(),
     }
+
+    print(Product.get_prod_count_by_category)
+
     return render(request, 'Product/product_list.html', context)
 
 

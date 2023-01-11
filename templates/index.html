@@ -129,12 +129,12 @@
                                     </a>
 
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist" title="Add to wishlist"></a>
+                                        <a href="{% url 'ECommerceAuth:add_to_wishlist' products.slug %}?variant={{ selected_size }}" class="btn-product-icon btn-wishlist" title="Add to wishlist"></a>
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
-                                        <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
+                                        <a href="{% url 'ECommerceAuth:add_to_cart' products.slug %}?variant={{ selected_size }}" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+{#                                        <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>#}
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 
@@ -144,7 +144,7 @@
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="{% url 'Product:Product-Details' products.slug %}">{{ products.product_name}}</a></h3><!-- End .product-title -->
                                     <div class="product-price">
-                                        <span class="new-price">${{ products.price }}</span>
+                                        <span class="new-price">BDT.{{ products.price }}</span>
 {#                                        <span class="old-price">Was $349.99</span>#}
                                     </div><!-- End .product-price -->
                                     <div class="ratings-container">

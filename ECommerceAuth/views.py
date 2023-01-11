@@ -236,3 +236,32 @@ def cart(request):
         'cart': Cart.objects.filter(is_paid=False, user= request.user)
     }
     return render(request,'ecommerceauth/cart.html')
+
+def add_to_wishlist(request, slug):
+
+    print('""""""""""""""""""""""""""')
+    print(request.user)
+    print('""""""""""""""""""""""""""')
+    variant = request.GET.get('variant')
+    product = Product.objects.get(slug=slug)
+    user = request.user
+
+    wishlist , _ = Wishlist.objects.get_or_create(user=user, is_paid=False)
+
+    wishlist_item = WishlistItem.objects.create(wishlist=wishlist, product=product)
+
+    if variant:
+        variant = request.GET.get('variant')
+        size_variant = SizeVariant.objects.get(size_name=variant)
+        wishlist_item.size_variant = size_variant
+        wishlist_item.save()
+
+    print(request.user.username)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def wishlist(request):
+    context ={
+        'wishlist': Wishlist.objects.filter(is_paid=False, user= request.user)
+    }
+    return render(request,'ecommerceauth/wishlist.html')

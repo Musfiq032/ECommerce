@@ -101,18 +101,18 @@
 
                                                 <div class="product-action-vertical">
                                                     <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                                    <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                                    <a href="/media/{{ product.product_images.first.image }}" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
                                                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                                 </div><!-- End .product-action-vertical -->
 
                                                 <div class="product-action">
-                                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                    <a href="{% url 'ECommerceAuth:add_to_cart' product.slug %}?variant={{ selected_size }}" class="btn-product btn-cart"><span>add to cart</span></a>
                                                 </div><!-- End .product-action -->
                                             </figure><!-- End .product-media -->
 
                                             <div class="product-body">
                                                 <div class="product-cat">
-                                                    <a href="#">Women</a>
+                                                    <a href="#">{{ product.subcategory.subcategory_name }}</a>
                                                 </div><!-- End .product-cat -->
                                                 <h3 class="product-title"><a href="{% url 'Product:Product-Details' product.slug %}">{{ product.product_name}}</a></h3><!-- End .product-title -->
                                                 <div class="product-price">
@@ -164,13 +164,13 @@
 									<div class="collapse show" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
-                                                {% for category in product_list %}
+                                                {% for sub_category in Sub_Category %}
 												<div class="filter-item">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="cat-1">
-														<label class="custom-control-label" for="cat-1">{{ category.subcategory }}</label>
+														<label class="custom-control-label" for="cat-1">{{ sub_category.subcategory_name }}</label>
 													</div><!-- End .custom-checkbox -->
-													<span class="item-count">3</span>
+													<span class="item-count">0</span>
 												</div><!-- End .filter-item -->
                                                 {% endfor %}
 

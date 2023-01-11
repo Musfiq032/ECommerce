@@ -6,4 +6,7 @@ from ECommerceAuth.models import *
 admin.site.register(Customer)
 admin.site.register(Cart)
 admin.site.register(CartItem)
+admin.site.register(Wishlist)
+admin.site.register(WishlistItem)
+
 

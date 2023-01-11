@@ -22,6 +22,9 @@ class Customer(models.Model):
     def get_cart_count(self):
         return CartItem.objects.filter(cart__is_paid=False, cart__user=self.user).count()
 
+    def get_wishlist_count(self):
+        return WishlistItem.objects.filter(wishlist__is_paid=False, wishlist__user=self.user).count()
+
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart')
@@ -39,3 +42,20 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.product.product_name} in {self.cart.user.username}'s Cart"
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
+    is_paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username}'s Wishlist"
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='wishlist_item')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    color_variant = models.ForeignKey(ColorVariant, on_delete=models.SET_NULL, null=True, blank=True)
+    size_variant = models.ForeignKey(SizeVariant, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.product.product_name} in {self.wishlist.user.username}'s wishlist"
+

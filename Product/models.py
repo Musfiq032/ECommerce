@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 
 class Brand(models.Model):
-    brand_name= models.CharField(max_length=250, blank=True, null=True,default='')
+    brand_name= models.CharField(max_length=250, blank=True, null=True,default='None')
 
     def __str__(self):
         return self.brand_name
@@ -36,9 +36,11 @@ class SubCategory(models.Model):
         return self.subcategory_name
 
 
+
+
 class ColorVariant(models.Model):
     color_name = models.CharField(max_length=50, default='')
-    brand= models.ForeignKey(Brand, on_delete=models.CASCADE)
+    brand= models.ForeignKey(Brand, on_delete=models.CASCADE, default=1)
     price = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
@@ -47,7 +49,7 @@ class ColorVariant(models.Model):
 
 class SizeVariant(models.Model):
     size_name = models.CharField(max_length=50, default='')
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, default=1)
     price = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
@@ -57,7 +59,7 @@ class SizeVariant(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
-    brand= models.ForeignKey(Brand, on_delete=models.DO_NOTHING)
+    brand= models.ForeignKey(Brand, on_delete=models.DO_NOTHING, default=1)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     size_variant = models.ManyToManyField(SizeVariant, blank=True)
@@ -77,6 +79,9 @@ class Product(models.Model):
     def get_product_price_by_size(self, size):
 
         return self.price + SizeVariant.objects.get(size_name= size).price
+
+    def get_prod_count_by_category(self,subcat_slug):
+        return Product.objects.filter(subcategory=subcat_slug).count()
 
 
 class ProductImage(models.Model):
