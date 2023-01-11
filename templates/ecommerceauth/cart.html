@@ -17,7 +17,6 @@
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
-
             <div class="page-content">
             	<div class="cart">
 	                <div class="container">
@@ -35,31 +34,38 @@
 									</thead>
 
 									<tbody>
+                                    {% for cart_items in cart_item %}
 
 										<tr>
 											<td class="product-col">
 												<div class="product">
 													<figure class="product-media">
 														<a href="#">
-															<img src="assets/images/products/table/product-1.jpg" alt="Product image">
+															<img src="/media/{{ cart_items.product.product_images.first }}" alt="Product image">
 														</a>
 													</figure>
 
 													<h3 class="product-title">
-														<a href="#">Beige knitted elastic runner shoes</a>
+														<a href="#">{{ cart_items.product.product_name }}</a>
 													</h3><!-- End .product-title -->
 												</div><!-- End .product -->
 											</td>
-											<td class="price-col">$84.00</td>
+											<td class="price-col">BDT.{{cart_items.product.price}}</td>
 											<td class="quantity-col">
                                                 <div class="cart-product-quantity">
                                                     <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                                 </div><!-- End .cart-product-quantity -->
                                             </td>
-											<td class="total-col">$84.00</td>
-											<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+											<td class="total-col">BDT.{{ cart_items.get_product_price }}</td>
+											<td class="remove-col">
+                                                <a href="{% url 'ECommerceAuth:remove_from_cart'  cart_items.id  %}" class="btn btn-light">
+                                                    Remove
+                                                </a>
+                                            </td>
 										</tr>
+                                    {% endfor %}
 									</tbody>
+
 								</table><!-- End .table table-wishlist -->
 
 	                			<div class="cart-bottom">
@@ -85,7 +91,7 @@
 	                					<tbody>
 	                						<tr class="summary-subtotal">
 	                							<td>Subtotal:</td>
-	                							<td>$160.00</td>
+	                							<td></td>
 	                						</tr><!-- End .summary-subtotal -->
 	                						<tr class="summary-shipping">
 	                							<td>Shipping:</td>

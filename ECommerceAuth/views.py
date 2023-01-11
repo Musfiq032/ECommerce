@@ -233,9 +233,19 @@ def add_to_cart(request, slug):
 
 def cart(request):
     context ={
-        'cart': Cart.objects.filter(is_paid=False, user= request.user)
+        'cart_item': CartItem.objects.filter(cart__user=request.user)
     }
-    return render(request,'ecommerceauth/cart.html')
+    return render(request,'ecommerceauth/cart.html', context)
+
+def remove_from_cart(request, uid):
+    try:
+        cart_item= CartItem.objects.get(id=uid)
+        cart_item.delete()
+
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def add_to_wishlist(request, slug):
 
@@ -264,4 +274,4 @@ def wishlist(request):
     context ={
         'wishlist': Wishlist.objects.filter(is_paid=False, user= request.user)
     }
-    return render(request,'ecommerceauth/wishlist.html')
+    return render(request,'ecommerceauth/wishlist.html',context)

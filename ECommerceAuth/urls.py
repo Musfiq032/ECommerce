@@ -14,8 +14,9 @@ urlpatterns = [
                path('set-new-password/<uidb64>/<token>', views.set_new_password_view.as_view(), name='Set-new-password'),
                path('cart/', views.cart, name='cart'),
                path('wishlist/', views.wishlist, name='Wishlist'),
-               path('add_to_cart/<slug>/', views.add_to_cart, name='add_to_cart'),
-               path('add_to_wishlist/<slug>/', views.add_to_wishlist, name='add_to_wishlist')
+               path('add_to_cart/<slug:slug>/', views.add_to_cart, name='add_to_cart'),
+               path('remove_cart/<uid>', views.remove_from_cart, name='remove_from_cart'),
+               path('add_to_wishlist/<slug:slug>/', views.add_to_wishlist, name='add_to_wishlist')
 
 
 
