@@ -1,4 +1,3 @@
-from django.db import models
 from Product.models import *
 from home.models import *
 from django.contrib.auth import get_user_model  # current user model
@@ -42,6 +41,8 @@ class Cart(models.Model):
             if cart_item.size_variant:
                 size_variant_price= cart_item.size_variant.price
                 price.append(size_variant_price)
+        if self.coupon:
+            return sum(price) - self.coupon.discount_price
         return sum(price)
 
     def __str__(self):
@@ -65,6 +66,7 @@ class CartItem(models.Model):
             size_variant_price= self.size_variant.price
             price.append(size_variant_price)
         return sum(price)
+
 
     def __str__(self):
         return f"{self.product.product_name} in {self.cart.user.username}'s Cart"

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.generic import View
-from .models import *
+from ECommerceAuth.models import *
 
 # to activate the user accounts
 
@@ -231,31 +231,90 @@ def add_to_cart(request, slug):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+# def cart(request):
+#     cart_item = CartItem.objects.filter(cart__user=request.user)
+#     cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
+#     if request.method == 'POST':
+#         coupon= request.POST.get('coupon')
+#         print(coupon)
+#         cart_obj1 = Cart.objects.all()
+#         coupon_obj= Coupon.objects.filter( coupon_code__icontains= coupon)
+#         if not coupon_obj.exists():
+#             messages.warning(request, 'Invalid Coupon Code')
+#             print(coupon.coupon_code)
+#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+#
+#         if  cart_obj1.> coupon_obj.minimum_amount:
+#             messages.warning(request, f'Amount Should be Greater then {coupon_obj.minimum_amount}.')
+#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+#
+#         if not coupon_obj.is_expired:
+#             messages.warning(request, 'Coupon Expired')
+#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+#
+#         cart_obj.coupon= coupon_obj[0]
+#         cart_obj.coupon.save()
+#         messages.success(request, 'Coupon Applied')
+#         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+#
+#         context = {
+#             'cart_item': cart_item,
+#             'cart': cart_obj
+#         }
+#         return render(request,'ecommerceauth/cart.html', context)
+
+
+
+# Can't access the function written on ECommerceAuth/model So did some compromises to get those functions
 def cart(request):
-    cart_item= CartItem.objects.filter(cart__user=request.user)
-    cart_obj= Cart.objects.filter(user=request.user, is_paid=False)
+    global cart_total, obj_coupon
+    cart_item = CartItem.objects.filter(cart__user=request.user)
+    cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
 
-    if request.method == 'POST':
-        coupon= request.POST.get('coupon')
-        coupon_obj= Coupon.objects.filter( coupon_code__icontains= coupon)
-        if not coupon_obj.exists():
-            messages.warning(request, 'Invalid Coupon Code')
+    for obj in cart_obj:
+        cart_total=obj.get_cart_total()
+
+        if request.method == 'POST':
+            coupon= request.POST.get('coupon')
+            coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon)
+
+            if not coupon_obj.exists():
+                messages.warning(request, 'Invalid Coupon Code')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            for obj_cart in cart_obj:
+                for obj_coupon in coupon_obj:
+                    if obj_cart.get_cart_total() < obj_coupon.minimum_amount:
+                        messages.warning(request, f'Amount Should be Greater then {obj_coupon.minimum_amount}.')
+                        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            if obj.coupon:
+                messages.warning(request, 'Coupon already Exist')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            for coupon_obj_1 in coupon_obj:
+                if coupon_obj_1.is_expired:
+                    messages.warning(request, 'Coupon Expired')
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            obj.coupon= obj_coupon
+            obj.save()
+            messages.success(request, 'Coupon Applied')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        if cart_obj.coupon:
-            messages.warning(request, 'Coupon already Exist')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-        cart_obj.coupon= coupon_obj
-        cart_obj.save()
-        messages.warning(request, 'Coupon Applied')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     context = {
-        'cart_item': cart_item,
-        'cart': cart_obj
-    }
+            'cart_item': cart_item,
+            'cart': cart_obj
+        }
     return render(request,'ecommerceauth/cart.html', context)
+
+def remove_coupon(request, remove_coupon_uid):
+    cart= Cart.objects.get(id= remove_coupon_uid)
+    cart.coupon= None
+    cart.save()
+    messages.success(request,'Coupon Removed')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 def remove_from_cart(request, uid):
     try:

@@ -32,8 +32,6 @@ def product_list_view(request):
         'Sub_Category': SubCategory.objects.all(),
     }
 
-    print(Product.get_prod_count_by_category)
-
     return render(request, 'Product/product_list.html', context)
 
 

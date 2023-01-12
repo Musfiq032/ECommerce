@@ -78,18 +78,23 @@
 													<button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
 												</div><!-- .End .input-group-append -->
 			        						</div><!-- End .input-group -->
+                                            {% for carts in cart %}
+                                                {% if carts.coupon %}
+                                                    <a href="{% url 'ECommerceAuth:remove_coupon' carts.id %}">{{ carts.coupon.coupon_code }}</a>
+                                                {% endif %}
+                                            {% endfor %}
 			            				</form>
 			            			</div><!-- End .cart-discount -->
 
 		            			</div><!-- End .cart-bottom -->
-                            										{% for message in messages %}
+                            	{% for message in messages %}
 										<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
 											<strong></strong>{{message}}
 											<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">&times;</span>
 											  </button>
 										  </div>
-										  {% endfor %}
+								{% endfor %}
 	                		</div><!-- End .col-lg-9 -->
 	                		<aside class="col-lg-3">
 	                			<div class="summary summary-cart">
@@ -99,9 +104,8 @@
 	                					<tbody>
 	                						<tr class="summary-subtotal">
 	                							<td>Subtotal:</td>
-	                							<td>
-                                                    {% for cart_total in cart %}
-                                                        BDT.{{ cart_total.get_cart_total }}
+	                							<td>{% for cart_total in cart.all %}
+                                                    {{ cart_total.get_cart_total }}
                                                     {% endfor %}
                                                 </td>
 	                						</tr><!-- End .summary-subtotal -->
