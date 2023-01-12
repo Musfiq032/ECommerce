@@ -1,6 +1,6 @@
 from django.db import models
-# from django.contrib.auth.models import User
 from Product.models import *
+from home.models import *
 from django.contrib.auth import get_user_model  # current user model
 
 # Create your models here.
@@ -25,15 +25,6 @@ class Customer(models.Model):
     def get_wishlist_count(self):
         return WishlistItem.objects.filter(wishlist__is_paid=False, wishlist__user=self.user).count()
 
-
-class Coupon(models.Model):
-    coupon_code =  models.CharField(max_length=10)
-    is_expired = models.BooleanField(default=False)
-    discount_price = models.IntegerField(default=100)
-    minimum_amount= models.IntegerField(default=50)
-
-    def __str__(self) -> str:
-        return self.coupon_code
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart')

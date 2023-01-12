@@ -232,9 +232,28 @@ def add_to_cart(request, slug):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def cart(request):
-    context ={
-        'cart_item': CartItem.objects.filter(cart__user=request.user),
-        'cart': Cart.objects.filter(user= request.user, is_paid=False)
+    cart_item= CartItem.objects.filter(cart__user=request.user)
+    cart_obj= Cart.objects.filter(user=request.user, is_paid=False)
+
+    if request.method == 'POST':
+        coupon= request.POST.get('coupon')
+        coupon_obj= Coupon.objects.filter( coupon_code__icontains= coupon)
+        if not coupon_obj.exists():
+            messages.warning(request, 'Invalid Coupon Code')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        if cart_obj.coupon:
+            messages.warning(request, 'Coupon already Exist')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        cart_obj.coupon= coupon_obj
+        cart_obj.save()
+        messages.warning(request, 'Coupon Applied')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    context = {
+        'cart_item': cart_item,
+        'cart': cart_obj
     }
     return render(request,'ecommerceauth/cart.html', context)
 
