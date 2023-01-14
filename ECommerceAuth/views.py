@@ -214,6 +214,7 @@ def add_to_cart(request, slug):
     print(request.user)
     print('""""""""""""""""""""""""""')
     variant = request.GET.get('variant')
+    quantity = request.GET.get('quantity')
     product = Product.objects.get(slug=slug)
     user = request.user
 
@@ -221,13 +222,17 @@ def add_to_cart(request, slug):
 
     cart_item = CartItem.objects.create(cart=cart, product=product)
 
-    if variant:
+    if variant and quantity:
         variant = request.GET.get('variant')
+        quantity = int(request.GET.get('quantity'))
         size_variant = SizeVariant.objects.get(size_name=variant)
+        quantity= Product.objects.get(quantity=quantity)
         cart_item.size_variant = size_variant
+        cart_item.quantity = quantity
         cart_item.save()
 
     print(request.user.username)
+    print(cart_item.quantity)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

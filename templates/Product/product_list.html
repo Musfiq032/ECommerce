@@ -14,7 +14,12 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                         <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">All Products</li>
+                        {% if main_category %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ main_category.name }} Products</li>
+                            {% else %}
+                            <li class="breadcrumb-item active" aria-current="page">All Products</li>
+
+                        {% endif %}
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
@@ -26,7 +31,7 @@
                 			<div class="toolbox">
                 				<div class="toolbox-left">
                 					<div class="toolbox-info">
-                						Showing <span>9 of 56</span> Products
+                						Showing <span>{{  product.count }} of {{ product.count }}</span> Products
                 					</div><!-- End .toolbox-info -->
                 				</div><!-- End .toolbox-left -->
 
@@ -90,33 +95,33 @@
                             <div class="products mb-3">
                                 <div class="row justify-content-center">
 
-                                    {% for product in product_list %}
+                                    {% for products in product %}
                                     <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                         <div class="product product-7 text-center">
                                             <figure class="product-media">
-                                                <span class="product-label label-new">New</span>
+                                                <span class="product-label label-new">{{ products.brand.name }}</span>
                                                 <a href="product.html">
-                                                    <img src="/media/{{ product.product_images.first.image }}" alt="Product image" class="product-image">
+                                                    <img src="/media/{{ products.product_images.first.image }}" alt="Product image" class="product-image">
                                                 </a>
 
                                                 <div class="product-action-vertical">
                                                     <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                                    <a href="/media/{{ product.product_images.first.image }}" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                                    <a href="/media/{{ products.product_images.first.image }}" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
                                                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                                 </div><!-- End .product-action-vertical -->
 
                                                 <div class="product-action">
-                                                    <a href="{% url 'ECommerceAuth:add_to_cart' product.slug %}?variant={{ selected_size }}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                    <a href="{% url 'ECommerceAuth:add_to_cart' products.slug %}?variant={{ selected_size }}" class="btn-product btn-cart"><span>add to cart</span></a>
                                                 </div><!-- End .product-action -->
                                             </figure><!-- End .product-media -->
 
                                             <div class="product-body">
                                                 <div class="product-cat">
-                                                    <a href="#">{{ product.subcategory.subcategory_name }}</a>
+                                                    <a href="#">{{ products.category.name }}</a>
                                                 </div><!-- End .product-cat -->
-                                                <h3 class="product-title"><a href="{% url 'Product:Product-Details' product.slug %}">{{ product.product_name}}</a></h3><!-- End .product-title -->
+                                                <h3 class="product-title"><a href="{% url 'Product:Product-Details' products.slug %}">{{ products.product_name}}</a></h3><!-- End .product-title -->
                                                 <div class="product-price">
-                                                    ${{ product.price }}
+                                                    BDT.{{ products.price }}
                                                 </div><!-- End .product-price -->
 
 
@@ -157,20 +162,21 @@
                 				<div class="widget widget-collapsible">
     								<h3 class="widget-title">
 									    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-									        Category
+									        Brand
 									    </a>
+
 									</h3><!-- End .widget-title -->
 
 									<div class="collapse show" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
-                                                {% for sub_category in Sub_Category %}
+                                                {% for brands in brand %}
 												<div class="filter-item">
 													<div class="custom-control custom-checkbox">
 														<input type="checkbox" class="custom-control-input" id="cat-1">
-														<label class="custom-control-label" for="cat-1">{{ sub_category.subcategory_name }}</label>
+														<label class="custom-control-label" for="cat-1">{{ brands.name.capitalize }}</label>
 													</div><!-- End .custom-checkbox -->
-													<span class="item-count">0</span>
+													<span class="item-count"></span>
 												</div><!-- End .filter-item -->
                                                 {% endfor %}
 

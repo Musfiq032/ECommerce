@@ -2,45 +2,49 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
 
-
 class Brand(models.Model):
-    brand_name= models.CharField(max_length=250, blank=True, null=True,default='None')
-
-    def __str__(self):
-        return self.brand_name
-
-class Category(models.Model):
-    category_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    category_image = models.ImageField(upload_to='Categories')
+    image = models.ImageField(upload_to='Categories', null=True,blank=True)
+    description = RichTextField(default="Nothing is available", blank=True, null=True)
+    status= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    trending= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    meta_title= models.CharField(max_length=150, blank=True, null=True)
+    meta_keywords= models.CharField(max_length=150, blank=True, null=True)
+    meta_description= models.CharField(max_length=150, blank=True, null=True)
+    created_at= models.DateTimeField(auto_now_add=True)
+
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.category_name)
+        self.slug = slugify(self.name)
+        super(Brand, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    image = models.ImageField(upload_to='Categories', null=True,blank=True)
+    description = RichTextField(default="Nothing is available", blank=True, null=True)
+    status= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    trending= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    meta_title= models.CharField(max_length=150, blank=True, null=True)
+    meta_keywords= models.CharField(max_length=150, blank=True, null=True)
+    meta_description= models.CharField(max_length=150, blank=True, null=True)
+    created_at= models.DateTimeField(auto_now_add=True)
+
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.category_name
-
-
-class SubCategory(models.Model):
-    subcategory_name = models.CharField(max_length=50, default='')
-    main_category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    slug = models.SlugField(unique=True, blank=True, null=True)
-    subcategory_image = models.ImageField(upload_to='Sub Categories', default='')
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.subcategory_name)
-        super(SubCategory, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.subcategory_name
-
-
+        return self.name
 
 
 class ColorVariant(models.Model):
     color_name = models.CharField(max_length=50, default='')
-    brand= models.ForeignKey(Brand, on_delete=models.CASCADE, default=1)
     price = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
@@ -49,7 +53,6 @@ class ColorVariant(models.Model):
 
 class SizeVariant(models.Model):
     size_name = models.CharField(max_length=50, default='')
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, default=1)
     price = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
@@ -59,16 +62,21 @@ class SizeVariant(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
-    brand= models.ForeignKey(Brand, on_delete=models.DO_NOTHING, default=1)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
+    brand = models.ForeignKey(Brand, on_delete=models.DO_NOTHING, default="nothing")
     size_variant = models.ManyToManyField(SizeVariant, blank=True)
     color_variant = models.ManyToManyField(ColorVariant, blank=True)
-    discount = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=1, null=False,blank=False)
     description = RichTextField(blank=False, null=False, default='')
-    published_date = models.DateField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
+    status= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    trending= models.BooleanField(default=False, help_text="0=default, 1=hidden")
+    tag= models.CharField(max_length=150, blank=True, null=True)
+    meta_title= models.CharField(max_length=150, blank=True, null=True)
+    meta_keywords= models.CharField(max_length=150, blank=True, null=True)
+    meta_description= models.CharField(max_length=150, blank=True, null=True)
+    published_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.product_name)

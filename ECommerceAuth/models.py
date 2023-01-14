@@ -41,8 +41,12 @@ class Cart(models.Model):
             if cart_item.size_variant:
                 size_variant_price= cart_item.size_variant.price
                 price.append(size_variant_price)
+            if cart_item.quantity:
+                quantity= cart_item.quantity
+                price= price * quantity
         if self.coupon:
             return sum(price) - self.coupon.discount_price
+
         return sum(price)
 
     def __str__(self):
@@ -54,6 +58,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     color_variant = models.ForeignKey(ColorVariant, on_delete=models.SET_NULL, null=True, blank=True)
     size_variant = models.ForeignKey(SizeVariant, on_delete=models.SET_NULL, null=True, blank=True)
+    quantity = models.IntegerField(default=1)
 
 
     def get_product_price(self):

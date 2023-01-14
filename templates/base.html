@@ -213,15 +213,9 @@
                                     <ul class="menu-vertical sf-arrows">
                                         <li class="item-lead"><a href="#">Daily offers</a></li>
                                         <li class="item-lead"><a href="#">Gift Ideas</a></li>
-                                        <li><a href="#">Beds</a></li>
-                                        <li><a href="#">Lighting</a></li>
-                                        <li><a href="#">Sofas & Sleeper sofas</a></li>
-                                        <li><a href="#">Storage</a></li>
-                                        <li><a href="#">Armchairs & Chaises</a></li>
-                                        <li><a href="#">Decoration </a></li>
-                                        <li><a href="#">Kitchen Cabinets</a></li>
-                                        <li><a href="#">Coffee & Tables</a></li>
-                                        <li><a href="#">Outdoor Furniture </a></li>
+                                        {% for category in category %}
+                                        <li><a href="#">{{ category.name }}</a></li>
+                                        {% endfor %}
                                     </ul>
                                     <!-- End .menu-vertical -->
                                 </nav>
@@ -240,7 +234,7 @@
                                     <a href="{% url 'home:Home' %}">Home</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'Product:Product-List' %}">Shop</a>
+                                    <a href="#">Shop</a>
                                 </li>
                                 <li>
                                     <a href="#">Product</a>
@@ -986,6 +980,7 @@
     <script src="{% static 'assets/js/jquery.countdown.min.js' %}"></script>
     <!-- Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
     <script src="{% static 'assets/js/demos/demo-4.js' %}"></script>
 </body>
 

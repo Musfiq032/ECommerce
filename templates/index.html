@@ -81,14 +81,16 @@
                     <div class="row">
                         {% for main_categories in main_category %}
                         <div class="col-6 col-sm-4 col-lg-2">
-                            <a href="#" class="cat-block">
+                            <a href="{% url 'Product:Product-List' main_categories.slug %}" class="cat-block">
                                 <figure>
                                     <span>
-                                        <img src="{{main_categories.subcategory_image.url }}" alt="Sub-Category image">
+                                        <img src="{{main_categories.image.url }}" alt="Sub-Category image">
                                     </span>
                                 </figure>
 
-                                <h3 class="cat-block-title">{{ main_categories.subcategory_name}}</h3><!-- End .cat-block-title -->
+
+                                    <h3 class="cat-block-title">{{ main_categories.name }}</h3>
+
                             </a>
                         </div><!-- End .col-sm-4 col-lg-2 -->
                         {% endfor %}
@@ -97,6 +99,8 @@
             </div><!-- End .container -->
 
             <div class="mb-4"></div><!-- End .mb-4 -->
+
+
 
 
 
@@ -140,7 +144,7 @@
 
                                 <div class="product-body">
                                     <div class="product-cat">
-                                        <a href="#">{{ products.subcategory }}</a>
+                                        <a href="#">{{ products.category }}</a>
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="{% url 'Product:Product-Details' products.slug %}">{{ products.product_name}}</a></h3><!-- End .product-title -->
                                     <div class="product-price">

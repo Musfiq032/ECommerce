@@ -7,9 +7,9 @@ from Product.models import *
 
 def home_view(request):
     product = Product.objects.all()
-    sub_category = SubCategory.objects.all()
+    category = Category.objects.all()
     context = {
-        'main_category': sub_category,
+        'main_category': category,
         'product': product
     }
     return render(request, 'index.html', context)

@@ -7,7 +7,7 @@ class ProductImageAdmin(admin.StackedInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['product_name', 'category','brand', 'price']
+    list_display = ['product_name', 'category', 'price']
     inlines = [ProductImageAdmin]
 
 
@@ -24,9 +24,8 @@ class SizeVariantAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Brand)
 admin.site.register(Category)
-admin.site.register(SubCategory)
+admin.site.register(Brand)
 admin.site.register(Coupon)
 
 
