@@ -25,20 +25,4 @@ $(document).ready(function () {
             $(this).closest('.product_data').find('.qty-input').val(value);
         }
     });
-
-        $('.addToCart').click(function (e) {
-            e.preventDefault();
-
-            var quantity= $(this).closest('.product_data').find('.qty-input').val();
-
-        $.ajax({
-            method:"POST",
-            url: "ECommerceAuth/add_to_cart",
-            data:{
-                'quantity':quantity,
-                csrf
-            }
-        });
-
-    });
 });

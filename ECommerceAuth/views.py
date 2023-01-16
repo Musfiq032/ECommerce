@@ -213,8 +213,10 @@ def add_to_cart(request, slug):
     print('""""""""""""""""""""""""""')
     print(request.user)
     print('""""""""""""""""""""""""""')
-    variant = request.GET.get('variant')
-    quantity = request.GET.get('quantity')
+    size_variant = request.GET.get('s_variant')
+    color_variant = request.GET.get('c_variant')
+
+    quantity = request.POST.get('quantity')
     product = Product.objects.get(slug=slug)
     user = request.user
 
@@ -222,14 +224,26 @@ def add_to_cart(request, slug):
 
     cart_item = CartItem.objects.create(cart=cart, product=product)
 
-    if variant and quantity:
-        variant = request.GET.get('variant')
-        quantity = int(request.GET.get('quantity'))
+    if size_variant:
+        variant = request.GET.get('s_variant')
         size_variant = SizeVariant.objects.get(size_name=variant)
-        quantity= Product.objects.get(quantity=quantity)
         cart_item.size_variant = size_variant
-        cart_item.quantity = quantity
         cart_item.save()
+
+    # if color_variant:
+    #     variant = request.GET.get('variant')
+    #
+    #     color_variant= ColorVariant.objects.get(color_name=variant)
+    #
+    #     cart_item.color_variant = color_variant
+    #     cart_item.save()
+
+
+    if quantity:
+        cart_item.quantity= +1
+        cart_item.save()
+
+
 
     print(request.user.username)
     print(cart_item.quantity)

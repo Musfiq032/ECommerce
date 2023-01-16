@@ -54,7 +54,7 @@
                                     </div><!-- End .col-md-6 -->
 
                                     <div class="col-md-6">
-                                        <div class="product-details product-details-sidebar">
+                                        <div class="product-details product-details-sidebar product-data">
                                             <h1 class="product-title">{{ product_details.product_name }}</h1><!-- End .product-title -->
 
                                             <div class="ratings-container">
@@ -75,37 +75,34 @@
                                             <div class="product-content">
                                                 <p>Sed egestas, ante et vulputate volutpat, eros semper est, vitae luctus metus libero eu augue.</p>
                                             </div><!-- End .product-content -->
-                                                {% if product_details.color_variant.count %}
+                                            {% if product_details.quantity > 0 %}
+                                                <label class="badge bg-success" style="color: white">In Stock</label>
+                                            {% else %}
+                                                <label class="badge bg-danger" style="color: white">Out of Stock</label>
+                                            {% endif %}
 
-                                                       <div class="form-group col-md">
-                                                           <label><strong>Select Color</strong></label>
-                                                <div class="mt-1">
-                                                    {% for color in product_details.color_variant.all %}
-                                                        <label class="custom-control custom-radio custom-control-inline">
-                                                        <input type="radio" onchange="get_correct_price('{{ color.color_name }}')" name="select_color" checked="" class="custom-control-input">
-                                                        <div class="custom-control-label">
-                                                            {{ color.color_name }}
-                                                        </div>
-                                                        </label>
-                                                    {% endfor %}
-                                                </div>
 
-                                                </div>
-{#                                            <div class="details-filter-row details-row-size">#}
-{#                                                <label>Color:</label>#}
+                                        <!--Color Variant -->
+
+{#                                                {% if product_details.color_variant.count %}#}
 {##}
-{#                                                <div class="select-custom">#}
-{#                                                <select name="color" id="color" class="form-control">#}
-{#                                                <option value="#" selected="selected">Select a size</option>#}
+{#                                                       <div class="form-group col-md">#}
+{#                                                           <label><strong>Select Color</strong></label>#}
+{#                                                <div class="mt-1">#}
 {#                                                    {% for color in product_details.color_variant.all %}#}
-{#                                                     <option value="color">{{ color.color_name }}</option>#}
+{#                                                        <label class="custom-control custom-radio custom-control-inline">#}
+{#                                                        <input type="radio" onchange="get_correct_price({color : '{{ color.color_name }}'})" name="selected_color" {% if selected_color == color.color_name %} checked {% endif %} class="custom-control-input">#}
+{#                                                        <div class="custom-control-label">#}
+{#                                                            {{ color.color_name }}#}
+{#                                                        </div>#}
+{#                                                        </label>#}
 {#                                                    {% endfor %}#}
-{#                                                </select>#}
+{#                                                </div>#}
 {##}
-{#                                                </div><!-- End .product-nav -->#}
-{#                                            </div><!-- End .details-filter-row -->#}
-                                                {% endif %}
+{#                                                </div>#}
+{#                                                {% endif %}#}
 
+                                        <!--Size Variant -->
 
                                             {% if product_details.size_variant.count %}
 
@@ -114,7 +111,7 @@
                                                 <div class="mt-1">
                                                     {% for size in product_details.size_variant.all %}
                                                         <label class="custom-control custom-radio custom-control-inline">
-                                                        <input type="radio" onchange="get_correct_price('{{ size.size_name }}')" name="selected_size" {% if selected_size == size.size_name %} checked {% endif %} class="custom-control-input">
+                                                        <input type="radio" onchange="get_correct_price({size : '{{ size.size_name }}'})" name="selected_size" {% if selected_size == size.size_name %} checked {% endif %} class="custom-control-input">
                                                         <div class="custom-control-label">
                                                             {{ size.size_name }}
                                                         </div>
@@ -138,13 +135,19 @@
 
                                             <div class="product-details-action">
                                                 <div class="details-action-col">
+
                                                     <label for="Quantity">Qty:</label>
+
                                                     <div class="input-group tex-center" style="width: 130px; padding-right: 10px;">
                                                         <button class="input-group-text decrement-btn" >-</button>
                                                         <input type="text" name="quantity" class="form-control qty-input text-center" value="1">
                                                         <button class="input-group-text increment-btn" >+</button>
                                                     </div>
-                                                    <a href="{% url 'ECommerceAuth:add_to_cart' product_details.slug %}?variant={{ selected_size }}" class="btn-product btn-cart" onclick=""><span>add to cart</span></a>
+                                                    {% if product_details.quantity == 0 %}
+                                                    <a href="#" class="btn-product" onclick=""><span>Out Of Stock</span></a>
+                                                    {% else %}
+                                                    <a href="{% url 'ECommerceAuth:add_to_cart' product_details.slug %}?s_variant={{ selected_size }}" class="btn-product btn-cart" onclick=""><span>add to cart</span></a>
+                                                    {% endif %}
                                                 </div><!-- End .details-action-col -->
 
                                                 <div class="details-action-wrapper">
@@ -292,10 +295,11 @@
         </main><!-- End .main -->
 
     <script>
-        function get_correct_price(size){
+        function get_correct_price({size, color}){
 
             window.location.href= window.location.pathname + `?size=${size}`
         }
+
 
 
     </script>
