@@ -27,26 +27,26 @@
 {#            					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>#}
 {#            				</form>#}
 {#            			</div><!-- End .checkout-discount -->#}
-            			<form action="#">
+            			<form action="#" method="post">
+                        {% csrf_token %}
 		                	<div class="row">
 		                		<div class="col-lg-9">
 		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
 
 
 	            						<label>Street address *</label>
-	            						<input type="text" class="form-control" placeholder="House number and Street name" required>
-	            						<input type="text" class="form-control" placeholder="Appartments, suite, unit etc ..." required>
+                                            {{form.street_address}}
 
 
 		                				<div class="row">
 		                					<div class="col-sm-6">
 		                						<label>Email address *</label>
-	        							<input type="email" class="form-control" required>
+                                                {{form.email_address}}
 		                					</div><!-- End .col-sm-6 -->
 
 		                					<div class="col-sm-6">
 		                						<label>Phone *</label>
-		                						<input type="tel" class="form-control" required>
+                                                {{form.mobile_no}}
 		                					</div><!-- End .col-sm-6 -->
 		                				</div><!-- End .row -->
 

@@ -36,9 +36,6 @@ class Cart(models.Model):
         price= []
         for cart_item in cart_item:
             price.append(cart_item.product.price)
-            if cart_item.color_variant:
-                color_variant_price= cart_item.color_variant.price
-                price.append(color_variant_price)
             if cart_item.size_variant:
                 size_variant_price= cart_item.size_variant.price
                 price.append(size_variant_price)
@@ -103,6 +100,23 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def get_cart_total(self):
+        cart_item = self.item.all()
+        price= []
+        for cart_item in cart_item:
+            price.append(cart_item.product.price)
+            if cart_item.size_variant:
+                size_variant_price= cart_item.size_variant.price
+                price.append(size_variant_price)
+            if cart_item.quantity:
+                quantity= cart_item.quantity
+                price= price * quantity
+        if self.coupon:
+            return sum(price) - self.coupon.discount_price
+
+        return sum(price)
+
 
 class BillingAdress(models.Model):
 

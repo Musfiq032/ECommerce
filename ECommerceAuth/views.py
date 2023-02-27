@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.generic import View
 from ECommerceAuth.models import *
+from .forms import CheckoutForm
 
 # to activate the user accounts
 
@@ -250,38 +251,6 @@ def add_to_cart(request, slug):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-# def cart(request):
-#     cart_item = CartItem.objects.filter(cart__user=request.user)
-#     cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
-#     if request.method == 'POST':
-#         coupon= request.POST.get('coupon')
-#         print(coupon)
-#         cart_obj1 = Cart.objects.all()
-#         coupon_obj= Coupon.objects.filter( coupon_code__icontains= coupon)
-#         if not coupon_obj.exists():
-#             messages.warning(request, 'Invalid Coupon Code')
-#             print(coupon.coupon_code)
-#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-#
-#         if  cart_obj1.> coupon_obj.minimum_amount:
-#             messages.warning(request, f'Amount Should be Greater then {coupon_obj.minimum_amount}.')
-#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-#
-#         if not coupon_obj.is_expired:
-#             messages.warning(request, 'Coupon Expired')
-#             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-#
-#         cart_obj.coupon= coupon_obj[0]
-#         cart_obj.coupon.save()
-#         messages.success(request, 'Coupon Applied')
-#         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-#
-#         context = {
-#             'cart_item': cart_item,
-#             'cart': cart_obj
-#         }
-#         return render(request,'ecommerceauth/cart.html', context)
-
 
 
 # Can't access the function written on ECommerceAuth/model So did some compromises to get those functions
@@ -375,6 +344,8 @@ def wishlist(request):
     return render(request,'ecommerceauth/wishlist.html',context)
 
 def checkout(request):
+
+    form= CheckoutForm()
     cart_item = CartItem.objects.filter(cart__user=request.user)
     cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
 
@@ -383,6 +354,13 @@ def checkout(request):
 
     context= {
         'cart_item': cart_item,
-        'cart': cart_obj
+        'cart': cart_obj,
+        'form': form
     }
     return render(request,'ecommerceauth/checkout.html',context)
+
+    # def post(self, *args, **kwargs):
+    #     form= CheckoutForm()
+    #     if form.is_valid():
+    #         print("form is valid")
+    #         return redirect('ECommerceAuth:checkout')
