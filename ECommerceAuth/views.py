@@ -373,3 +373,16 @@ def wishlist(request):
         'wishlist': Wishlist.objects.filter(is_paid=False, user= request.user)
     }
     return render(request,'ecommerceauth/wishlist.html',context)
+
+def checkout(request):
+    cart_item = CartItem.objects.filter(cart__user=request.user)
+    cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
+
+    for obj in cart_obj:
+        cart_total=obj.get_cart_total()
+
+    context= {
+        'cart_item': cart_item,
+        'cart': cart_obj
+    }
+    return render(request,'ecommerceauth/checkout.html',context)

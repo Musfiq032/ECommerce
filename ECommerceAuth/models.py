@@ -1,6 +1,7 @@
 from Product.models import *
 from home.models import *
-from django.contrib.auth import get_user_model  # current user model
+from django.contrib.auth import get_user_model
+from django_countries.fields import CountryField# current user model
 
 # Create your models here.
 
@@ -63,9 +64,6 @@ class CartItem(models.Model):
 
     def get_product_price(self):
         price = [self.product.price]
-        if self.color_variant:
-            color_variant_price= self.color_variant.price
-            price.append(color_variant_price)
         if self.size_variant:
             size_variant_price= self.size_variant.price
             price.append(size_variant_price)
@@ -95,4 +93,24 @@ class WishlistItem(models.Model):
     def __str__(self):
         return f"{self.product.product_name} in {self.wishlist.user.username}'s wishlist"
 
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item= models.ManyToManyField(CartItem)
+    start_date= models.DateTimeField(auto_now_add=True)
+    order_date= models.DateTimeField()
+    order_status= models.BooleanField(default=False)
+    billing_address= models.ForeignKey('BillingAdress',on_delete=models.SET_NULL, blank=True,null=True)
 
+    def __str__(self):
+        return self.user.username
+
+class BillingAdress(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    street_address= models.CharField(max_length=100)
+    email_address= models.EmailField(max_length=100, blank=True)
+    mobile_no= models.IntegerField(blank=False)
+    notes= models.TextField(max_length=200)
+
+    def __str__(self):
+        return self.user.username

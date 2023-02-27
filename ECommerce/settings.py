@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'ECommerceAuth',
-    'Product'
+    'Product',
+    'django_countries'
 ]
 
 MIDDLEWARE = [
