@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
@@ -32,6 +33,13 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 # threading
 import threading
+
+# Rest Api
+
+import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 
 # class EmailThread(threading.Thread):
@@ -210,7 +218,6 @@ def logout_view(request):
 
 
 def add_to_cart(request, slug):
-
     print('""""""""""""""""""""""""""')
     print(request.user)
     print('""""""""""""""""""""""""""')
@@ -221,7 +228,7 @@ def add_to_cart(request, slug):
     product = Product.objects.get(slug=slug)
     user = request.user
 
-    cart , _ = Cart.objects.get_or_create(user=user, is_paid=False)
+    cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
 
     cart_item = CartItem.objects.create(cart=cart, product=product)
 
@@ -239,18 +246,14 @@ def add_to_cart(request, slug):
     #     cart_item.color_variant = color_variant
     #     cart_item.save()
 
-
     if quantity:
-        cart_item.quantity= +1
+        cart_item.quantity = +1
         cart_item.save()
-
-
 
     print(request.user.username)
     print(cart_item.quantity)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
 
 
 # Can't access the function written on ECommerceAuth/model So did some compromises to get those functions
@@ -260,10 +263,10 @@ def cart(request):
     cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
 
     for obj in cart_obj:
-        cart_total=obj.get_cart_total()
+        cart_total = obj.get_cart_total()
 
         if request.method == 'POST':
-            coupon= request.POST.get('coupon')
+            coupon = request.POST.get('coupon')
             coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon)
 
             if not coupon_obj.exists():
@@ -284,29 +287,29 @@ def cart(request):
                     messages.warning(request, 'Coupon Expired')
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-            obj.coupon= obj_coupon
+            obj.coupon = obj_coupon
             obj.save()
             messages.success(request, 'Coupon Applied')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
     context = {
-            'cart_item': cart_item,
-            'cart': cart_obj
-        }
-    return render(request,'ecommerceauth/cart.html', context)
+        'cart_item': cart_item,
+        'cart': cart_obj
+    }
+    return render(request, 'ecommerceauth/cart.html', context)
+
 
 def remove_coupon(request, remove_coupon_uid):
-    cart= Cart.objects.get(id= remove_coupon_uid)
-    cart.coupon= None
+    cart = Cart.objects.get(id=remove_coupon_uid)
+    cart.coupon = None
     cart.save()
-    messages.success(request,'Coupon Removed')
+    messages.success(request, 'Coupon Removed')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def remove_from_cart(request, uid):
     try:
-        cart_item= CartItem.objects.get(id=uid)
+        cart_item = CartItem.objects.get(id=uid)
         cart_item.delete()
 
     except Exception as e:
@@ -314,8 +317,8 @@ def remove_from_cart(request, uid):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-def add_to_wishlist(request, slug):
 
+def add_to_wishlist(request, slug):
     print('""""""""""""""""""""""""""')
     print(request.user)
     print('""""""""""""""""""""""""""')
@@ -323,7 +326,7 @@ def add_to_wishlist(request, slug):
     product = Product.objects.get(slug=slug)
     user = request.user
 
-    wishlist , _ = Wishlist.objects.get_or_create(user=user, is_paid=False)
+    wishlist, _ = Wishlist.objects.get_or_create(user=user, is_paid=False)
 
     wishlist_item = WishlistItem.objects.create(wishlist=wishlist, product=product)
 
@@ -337,30 +340,84 @@ def add_to_wishlist(request, slug):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
 def wishlist(request):
-    context ={
-        'wishlist': Wishlist.objects.filter(is_paid=False, user= request.user)
+    context = {
+        'wishlist': Wishlist.objects.filter(is_paid=False, user=request.user)
     }
-    return render(request,'ecommerceauth/wishlist.html',context)
+    return render(request, 'ecommerceauth/wishlist.html', context)
 
-def checkout(request):
 
-    form= CheckoutForm()
-    cart_item = CartItem.objects.filter(cart__user=request.user)
-    cart_obj = Cart.objects.filter(user=request.user, is_paid=False)
+class checkout(View):
 
-    for obj in cart_obj:
-        cart_total=obj.get_cart_total()
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        form = CheckoutForm(self.request.POST or None)
+        cart_item = CartItem.objects.filter(cart__user=self.request.user)
+        cart_obj = Cart.objects.filter(user=self.request.user, is_paid=False)
 
-    context= {
-        'cart_item': cart_item,
-        'cart': cart_obj,
-        'form': form
-    }
-    return render(request,'ecommerceauth/checkout.html',context)
+        for obj in cart_obj:
+            cart_total = obj.get_cart_total()
 
-    # def post(self, *args, **kwargs):
-    #     form= CheckoutForm()
-    #     if form.is_valid():
-    #         print("form is valid")
-    #         return redirect('ECommerceAuth:checkout')
+        context= {
+                'form':form,
+                'cart_item': cart_item,
+                'cart': cart_obj,
+
+        }
+        return render(self.request, 'ecommerceauth/checkout.html', context)
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        cart_item = CartItem.objects.filter(cart__user=self.request.user)
+        cart_obj = Cart.objects.filter(user=self.request.user, is_paid=False)
+        print(self.request.POST)
+
+        for obj in cart_obj:
+            cart_total = obj.get_cart_total()
+        try:
+            order= Order.objects.get(user= self.request.user, ordered= False)
+            if form.is_valid():
+                street_address = form.cleaned_data.get('street_address')
+                email_address = form.cleaned_data.get('email_address')
+
+                mobile_no = form.cleaned_data.get('mobile_no')
+                payment_option = form.cleaned_data.get('payment_option')
+                notes = form.cleaned_data.get('notes')
+
+                billing_address = BillingAdress(
+                    user=self.request.user,
+                    street_address=street_address,
+                    email_address=email_address,
+                    mobile_no=mobile_no,
+                    notes=notes
+                )
+                billing_address.save()
+                order.billing_address =billing_address
+                order.save()
+
+                context = {
+                    'cart_item': cart_item,
+                    'cart': cart_obj,
+                    'form': form
+                }
+                return render(self.request, 'others/contact.html', context)
+            else:
+                messages.warning(self.request, 'Checkout failed')
+                return render(self.request, 'ecommerceauth/checkout.html', context={
+                    'cart_item': cart_item,
+                    'cart': cart_obj,
+                    'form': form
+                })
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have an active orde")
+            return redirect("ECommerceAuth:checkout")
+
+
+
+class PaymentView(View):
+
+
+    def get(self, *args, **kwargs):
+
+        return render(self.request, "ecommerceauth/payment.html")

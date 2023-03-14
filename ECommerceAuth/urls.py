@@ -18,7 +18,8 @@ urlpatterns = [
                path('remove_cart/<uid>', views.remove_from_cart, name='remove_from_cart'),
                path('add_to_wishlist/<slug:slug>/', views.add_to_wishlist, name='add_to_wishlist'),
                path('remove_coupon/<remove_coupon_uid>/', views.remove_coupon, name='remove_coupon'),
-               path('checkout/', views.checkout, name='checkout')
+               path('checkout/', views.checkout.as_view(), name='checkout'),
+               path('payment/<payment_option>', views.PaymentView.as_view(), name='payment')
 
 
 
